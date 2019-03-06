@@ -4,7 +4,7 @@
  <title>The blog of Concentration Inequalities Reading Group</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000"/>
- <updated>2019-03-06T12:30:01-05:00</updated>
+ <updated>2019-03-06T12:31:42-05:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Concentration Inequalities Reading Group</name>
@@ -17,48 +17,6 @@
    <link href="http://localhost:4000/blog/2019/03/06/sample-post.html"/>
    <updated>2019-03-06T00:00:00-05:00</updated>
    <id>http://localhost:4000/blog/2019/03/06/sample-post</id>
-   <content type="html">&lt;p&gt;Based on Markdown, Supports rich math and align block.&lt;/p&gt;
-
-&lt;!-- 
-Tattooed roof party *vinyl* freegan single-origin coffee wayfarers tousled, umami yr 
-meggings hella selvage. Butcher bespoke seitan, cornhole umami gentrify put a bird 
-on it occupy trust fund. Umami whatever kitsch, locavore fingerstache Tumblr pork belly
-[keffiyeh](#). Chia Echo Park Pitchfork, Blue Bottle [hashtag](#) stumptown skateboard selvage 
-mixtape. Echo Park retro butcher banjo cardigan, seitan flannel Brooklyn paleo fixie 
-Truffaut. Forage mustache Thundercats next level disrupt. Bicycle rights forage tattooed
-chia, **wayfarers** swag raw denim hashtag biodiesel occupy gastropub!
-
----
-
-# It's all in the game.
-
-## You come at the king, you best not miss.
-
-### Be subtle with it, man. You know what subtle means?
-
-VHS post-ironic cred **bespoke** banjo. Yr wayfarers literally gentrify, flexitarian fap 
-dreamcatcher plaid cornhole Intelligentsia paleo. Beard try-hard direct trade, shabby chic 
-Helvetica `look ma, I can code`. Lo-fi American Apparel tattooed [Vice](#) tofu, yr vinyl. 
-Williamsburg butcher hella mumblecore fixie mlkshk, cliche wolf keytar mixtape kitsch banh mi 
-salvia. High Life Odd Future *chambray* kale chips hoodie, cray pop-up. Helvetica narwhal 
-iPhone try-hard jean shorts.
-
-&gt; This is a quote from someone famous about productivity
-
-
-Syntax highlighting with Solarized theme.
-
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;&lt;br data-jekyll-commonmark-ghpages&gt;  &lt;span class=&quot;n&quot;&gt;attr_accessible&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;br data-jekyll-commonmark-ghpages&gt;&lt;br data-jekyll-commonmark-ghpages&gt;  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tons&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;other&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;crap&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;br data-jekyll-commonmark-ghpages&gt;&lt;br data-jekyll-commonmark-ghpages&gt;&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
- --&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>A sample blog post</title>
-   <link href="http://localhost:4000/blog/2013/08/12/another-sample.html"/>
-   <updated>2013-08-12T00:00:00-04:00</updated>
-   <id>http://localhost:4000/blog/2013/08/12/another-sample</id>
    <content type="html">&lt;p&gt;Based on Markdown, Supports rich math and align block.&lt;/p&gt;
 
 &lt;!-- 
