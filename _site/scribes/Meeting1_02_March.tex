@@ -1,0 +1,256 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm, fullpage, algorithm,
+  algorithmic, hyperref}
+
+
+\newcommand{\loss}{\ensuremath{\ell}}
+\newcommand{\link}{\ensuremath{\Phi}}
+\newcommand{\w}{\ensur\Eemath{W}}
+\newcommand{\query}{\ensuremath{Z}}
+\newcommand{\Mmat}{\ensuremath{M}}
+\newcommand{\regpar}{\ensuremath{\lambda}}
+\newcommand{\margin}{\ensuremath{\theta}}
+\newcommand{\marginhat}{\ensuremath{\widehat{\margin}}}
+\newcommand{\lstrong}{\ensuremath{\gamma_\ell}}
+\newcommand{\lsmooth}{\ensuremath{\gamma_u}}
+\newcommand{\W}{\ensuremath{\mathcal{W}}}
+\newcommand{\X}{\ensuremath{\mathcal{X}}}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\queries}{\ensuremath{N}}
+\newcommand{\opt}{\ensuremath{\w^*}}
+\newcommand{\ip}[2]{\ensuremath{\left\langle #1, #2 \right\rangle}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\reals}{\ensuremath{\mathbb{R}}}
+\renewcommand{\P}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\Exp}[1]{\ensuremath{\mathbb{E}}\left[#1\right]}
+\newtheorem{assumption}{Assumption}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+
+\newenvironment{proof-of-lemma}[1][{}]{\noindent{\bf Proof of Lemma {#1}}
+  \hspace*{1em}}{\qed\smallskip\\}
+\newenvironment{proof-of-theorem}[1][{}]{\noindent{\bf Proof of Theorem {#1}}
+  \hspace*{1em}}{\qed\smallskip\\}
+\newenvironment{proof-of-proposition}[1][{}]{\noindent{\bf
+    Proof of Proposition {#1}}
+  \hspace*{1em}}{\qed\smallskip\\}
+\newenvironment{proof-of-corollary}[1][{}]{\noindent{\bf
+    Proof of Corollary {#1}}
+  \hspace*{1em}}{\qed\smallskip\\}
+
+
+\newcommand{\ScalSet}{\ensuremath{S}}
+\newcommand{\util}{\ensuremath{\tilde{u}}}
+\newcommand{\scalbound}{\ensuremath{r}}
+\newcommand{\idmat}{\ensuremath{I}}
+\newcommand{\ridge}{\ensuremath{\gamma}}
+\newcommand{\losstil}{\ensuremath{\tilde{\loss}}}
+\newcommand{\norm}[1]{\ensuremath{\| #1 \|}}
+\newcommand{\queryset}{\ensuremath{\mathcal{Z}}}
+\newcommand{\ynoise}{\ensuremath{\xi}}
+\newcommand{\xdomain}{\ensuremath{\mathcal{X}}}
+\newcommand{\xbound}{\ensuremath{R}}
+\newcommand{\wbound}{\ensuremath{\omega}}
+\newcommand{\predbound}{\ensuremath{\kappa}}
+\newcommand{\losslip}{\ensuremath{G}}
+\newcommand{\error}{\ensuremath{\theta}}
+\newcommand{\mgdiff}{\ensuremath{\xi}}
+\newcommand{\queryexp}{\ensuremath{\kappa}}
+\newcommand{\sign}{\ensuremath{\mbox{sign}}}
+\newcommand{\term}{\ensuremath{\mathcal{T}}}
+\newcommand{\numquery}{\ensuremath{N}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\pred}{\ensuremath{\widehat{\Delta}}}
+\newcommand{\truepred}{\ensuremath{\Delta}}
+\newcommand{\ind}[1]{\ensuremath{1\!\!1} \left\{ #1 \right\}} 
+\newcommand{\marg}{\ensuremath{\epsilon}}
+\newcommand{\tmarg}{\ensuremath{T_{\epsilon}}}
+\newcommand{\regret}{\ensuremath{R}}
+\newcommand{\bias}{\ensuremath{B}}
+\newcommand{\queryfun}{\ensuremath{Q}}
+\newcommand{\history}{\ensuremath{H}}
+\newcommand{\bbq}{\ensuremath{\mbox{BBQ}}}
+\newcommand{\bbqe}{\ensuremath{\mbox{BBQ}_{\epsilon}}}
+\newcommand{\order}{\ensuremath{\mathcal{O}}}
+\newcommand{\otil}{\ensuremath{\widetilde{O}}}
+\newcommand{\errorb}{\ensuremath{\bar{\error}}}
+\newcommand{\event}{\ensuremath{\mathcal{E}}}
+\newcommand{\west}{\ensuremath{\widehat{w}_n}}
+\newcommand{\trace}{\ensuremath{\mbox{Tr}}}
+\newcommand{\Covmat}{\ensuremath{\Sigma}}
+\newcommand{\Covsamp}{\ensuremath{\widehat{\Sigma}_n}}
+\newcommand{\sigmin}{\ensuremath{\sigma_{\min}(\Covmat)}}
+\newcommand{\opnorm}[1]{\ensuremath{\big|\!\big|\!\big| #1
+    \big|\!\big|\!\big|}}
+\renewcommand{\algorithmiccomment}[1]{// \texttt{#1}}
+\newcommand{\iter}[2][{}]{\ensuremath{\w^{#1}_{#2}}}
+\newcommand{\yopt}{\ensuremath{y^*}}
+\newcommand{\ypred}{\ensuremath{\hat{y}}}
+\newcommand{\ynext}{\ensuremath{\tilde{y}}}
+\newcommand{\ynextpr}{\ensuremath{\hat{\tilde{y}}}}
+\newcommand{\const}{\ensuremath{c}}
+\newcommand{\score}{\ensuremath{S}}
+\newcommand{\cost}{\ensuremath{C}}
+\newcommand{\cmax}{\ensuremath{\cost_{\mbox{max}}}}
+\newcommand{\cbar}{\ensuremath{\bar{\cost}}}
+\newcommand{\varcost}{\ensuremath{\sigma^2(\cost)}}
+\newcommand{\stdcost}{\ensuremath{\sigma(\cost)}}
+\newcommand{\bld}[1]{\bf #1}
+
+
+
+\title{Concentration Inequalities 1: Hoeffding, Azuma and McDiarmid's}
+
+
+\begin{document}
+\maketitle
+
+Concentration inequalities provide bounds on the probability with which a random variable $Z$ deviates from its typical value (usually expectation, but we will see examples of median at some point later). Specifically we will consider the case when $Y$ is itself a function of random variables $X_1,\ldots,X_n$. The most typical example, is when $Z$ is the sum or average of the $X$'s.  It has several applications all over, doesn't really need more motivation, lets just proceed.
+
+\section{Markov Inequality and Cramer Chernoff Method}
+Our starting point is as expected Markov's inequality which states that for any non-negative random variable $Y$, 
+\begin{align*}
+P(Y > \theta) = \E[\ind{Y > \theta}] \le \Exp{\ind{Y > \theta} \frac{Y}{\theta}} \le \frac{\Exp{Y}}{\theta}
+\end{align*}
+
+With the Markov inequality we are ready to take a stab at proving more interesting bounds using whats typically referred to as Cramer-Chernoff method. To this end, note that for any $\lambda \ge 0$,
+
+\begin{align*}
+P(Z > t) = P(\exp(\lambda Z) > \exp(\lambda t))  \le \frac{\Exp{e^{\lambda Z}}}{e^{\lambda t}}
+\end{align*}
+The function 
+\begin{align}\label{eq:MGF}
+M(\lambda) = \Exp{e^{\lambda Z}}
+\end{align}
+ is referred to as the moment generating function. It is one of those magical functions. Why? Write down the expansion of the exponential function and then you immediately notice that if we take the $k$'th derivative if $M(\lambda)$ at $\lambda = 0$ it is the $k$'th moment. Hence $M(\lambda)$ generates all the moments. Any case, I belabor, now also define 
+\begin{align}\label{eq:CGF}
+C(\lambda) = \log\left( M(\lambda)\right) = \log\left( \Exp{e^{\lambda Z}}\right) 
+\end{align}
+$C$ is referred to as cumulant generating function. Its fairly straightforward to check that $C$ is a convex function. From the above inequality we have that:
+\begin{align*}
+P(Z > t) \le M(\lambda) e^{- \lambda t} \le e^{- \lambda t + C(\lambda)}
+\end{align*}
+But the choice of $\lambda \ge 0$ is arbitrary and so let us take infimum over $\lambda$'s above to get:
+\begin{align*}
+P(Z > t) \le \inf_{\lambda \ge 0} e^{- \lambda t + C(\lambda)} = e^{- \sup_{\lambda \ge 0}\left\{ \lambda t - C(\lambda) \right\}} = e^{- \sup_{\lambda}\left\{ \lambda t - C(\lambda) \right\}}  = e^{- C^*(t)}
+\end{align*}
+Where in the above we dropped the $\lambda \ge 0$ because $t >0$ and $C$ is continuous and if $Z$ is a zero mean random variable then $C(0) = 0$ is the minimum and so optimum is only achieved for positive $\lambda$ and $C^*$ is the Legendre transform of $C$. The key idea for almost all concentration inequality proof techniques is that if we upper bound $C$ by some function $g$, then we get an upper bound on $P(Z > t) \le e^{- \sup_{\lambda}\left\{ \lambda t - g(\lambda) \right\}} $. 
+
+\begin{proposition}\label{prop:basic}
+If a function $g:\reals \mapsto \reals$ is such that $\forall \lambda, g(\lambda) \ge C(\lambda)$, then
+$$
+P(Z > t) \le e^{- \sup_{\lambda}\left\{ \lambda t - g(\lambda) \right\}} = e^{- g^*(\lambda) }
+$$
+where $g^{*}$ is the Legendre transform of $g$.
+\end{proposition}
+
+
+\section{Hoeffding Inequality}
+For this section we assume $Z = \sum_{i=1}^n X_i$ where each $X_i$'s are independent identically drawn zero mean random variable bounded as $|X_i| \le b$. 
+
+\begin{theorem}
+Assume $X_1,\ldots,X_n$'s are independent identically drawn zero mean random variable bounded as by $b$ then:
+$$
+P\left(\sum_{i=1}^n X_i \ge t\right) \le \exp\left(- \frac{t^2 }{8 n b^2} \right)
+$$
+\end{theorem}
+\begin{proof}
+Note that
+\begin{align*}
+M(\lambda) &= \Exp{\exp\left(\lambda \sum_{t=1}^n X_t\right)}\\
+&= \prod_{t=1}^n \Exp{\exp\left(\lambda  X_t\right)}\\
+&= \prod_{t=1}^n \Exp{\exp\left(\lambda  \left(X_t - \Exp{X'_t}\right)\right)}
+\intertext{By Jensen's inequality:}
+&\le \prod_{t=1}^n \Exp{\exp\left(\lambda  \left(X_t - X'_t\right) \right)}\\
+&= \prod_{t=1}^n \Exp{\frac{\exp\left(\lambda  \left(X_t - X'_t\right) \right) + \exp\left(\lambda  \left(X'_t - X_t\right) \right)}{2}}
+\intertext{Since $(e^y + e^{-y})/2 \le e^{y^2 / 2}$ we have:}
+&\le \prod_{t=1}^n \Exp{\exp\left(\frac{\lambda^2}{2}  \left(X_t - X'_t\right)^2 \right) }\\
+&\le \prod_{t=1}^n \exp\left(2 \lambda^2 b^2 \right)  = \exp\left(2 n \lambda^2 b^2 \right) 
+\end{align*}
+Hence we have that $C(\lambda) = \log(M(\lambda)) \le 2 n \lambda^2 b^2 =: g(\lambda)$. Hence from Proposition \ref{prop:basic}, we can conclude that:
+\begin{align*}
+P(Z \ge t) &\le e^{- \sup_{\lambda}\left\{ \lambda t - g(\lambda) \right\}} = e^{- \sup_{\lambda}\left\{ \lambda t - 2 n \lambda^2 b^2 \right\}}  = e^{-  t^2/8 n b^2 }
+\end{align*}
+\end{proof}
+
+\section{Hoeffding Azuma Inequality}
+For this section we assume $Z = \sum_{i=1}^n X_i$ where each $(X_i)_{i =1}^n$ is a martingale difference sequence with each $|X_i| \le b$ almost surely. A very minor edit to the previous proof yields the same inequality and is referred to as Hoeffding Azuma Inequality.
+
+
+
+\begin{theorem}
+Assume $\{X_i\}$ be a martingale difference sequence w.r.t. filtration $\{\F_i\}$ such that each $|X_i| \le b$ almost surely. Then we have that
+$$
+P\left(\sum_{i=1}^n X_i \ge t\right) \le \exp\left(- \frac{t^2 }{8 n b^2} \right)
+$$
+\end{theorem}
+\begin{proof}
+Before we proceed let us first introduce the short hands $\E_{i-1}[\cdot] = \Exp{ \cdot| \F_{i-1}}$. Note the idea is to do the previous proof more carefully, peeling indices one by one:
+\begin{align*}
+M(\lambda) &= \Exp{\exp\left(\lambda \sum_{t=1}^n X_t\right)}\\
+&=  \Exp{\exp\left(\lambda  \sum_{t=1}^{n-1} X_t\right) \cdot e^{\lambda X_n}}\\
+&= \Exp{\exp\left(\lambda  \sum_{t=1}^{n-1} X_t\right) \cdot \E_{n-1}\left[e^{\lambda X_n}\right]}\\
+&= \Exp{\exp\left(\lambda  \sum_{t=1}^{n-1} X_t\right) \cdot \E_{n-1}\left[e^{\lambda (X_n - \E_{n-1}[X'_n])}\right]}\\
+\intertext{where in the above, $X'_n$ has same conditional distribution as $X_n$ when conditioned on $\F_{n-1}$ and since we have a MDS, $\E_{n-1}[X'_n] = 0$. Now by Jensen's inequality:}
+&\le \Exp{\exp\left(\lambda  \sum_{t=1}^{n-1} X_t\right) \cdot \E_{n-1}\left[e^{\lambda (X_n - X'_n)}\right]}\\
+\intertext{Since $X_n$ and $X'_n$ conditioned on $\F_{n-1}$ are identically distributed, $X_n - X'_n$ are conditionally symmetric and so:}
+&= \Exp{\exp\left(\lambda  \sum_{t=1}^{n-1} X_t\right) \cdot \E_{n-1}\left[\frac{e^{\lambda (X_n - X'_n)}+ e^{\lambda (X'_n - X_n)}}{2}\right]}\\
+\intertext{Since $(e^y + e^{-y})/2 \le e^{y^2 / 2}$ we have:}
+&\le \Exp{\exp\left(\lambda  \sum_{t=1}^{n-1} X_t\right) \cdot \E_{n-1}\left[e^{\lambda^2 (X_n - X'_n)^2/2}\right]}\\
+&\le \Exp{\exp\left(\lambda  \sum_{t=1}^{n-1} X_t\right) } \cdot \exp\left(2 \lambda^2 b^2 \right)
+\end{align*}
+Now peeling similarly $n-1$ term up to $1$'st index we conclude that:
+$$
+M(\lambda) \le \exp\left(2 n \lambda^2 b^2 \right)
+$$
+Hence we have that $C(\lambda) = \log(M(\lambda)) \le 2 n \lambda^2 b^2 =: g(\lambda)$. Hence from Proposition \ref{prop:basic}, we can conclude that:
+\begin{align*}
+P(Z \ge t) &\le e^{- \sup_{\lambda}\left\{ \lambda t - g(\lambda) \right\}} = e^{- \sup_{\lambda}\left\{ \lambda t - 2 n \lambda^2 b^2 \right\}}  = e^{-  t^2/8 n b^2 }
+\end{align*}
+\end{proof}
+
+\section{McDiarmid's Inequality: Martingale Method}
+Now we move from sum to more general functions of independent random variables. We will use Hoeffding Azuma as our key inequality to do this. 
+
+\begin{corollary}
+Let $f:\X^n \mapsto \reals$ be any function such that for any $i \in [n]$ and any $x_1,\ldots,x_n \in \X$ and $x'_i \in \X$, 
+$$
+|f(x_1,\ldots,x_{i-1},x_i,x_{i+1},\ldots,x_n) - f(x_1,\ldots,x_{i-1},x'_i,x_{i+1},\ldots,x_n)| \le b
+$$
+Then, if $X_1,\ldots,X_n$ are iid $\X$ valued random variables, we have that
+$$
+P\left(f(X_1,\ldots,X_n) \ge \Exp{f} + t\right) \le \exp\left(- \frac{t^2 }{8 n b^2} \right)
+$$
+\end{corollary}
+\begin{proof}
+This is one of those cool tricks. We define whats referred to as Doob's martingale.  Define, 
+$$
+Z_i = \E_{i}\left[f(X_1,\ldots,X_{n})\right] - \E_{i-1}\left[f(X_1,\ldots,X_{n})\right]
+$$
+Notice first that $\E_{i-1}[Z_t] = 0$ (i.e. $Z_i$'s are a martingale difference sequence) and 
+$$
+\sum_{i=1}^n Z_i = \sum_{i=1}^n \left(\E_{i}\left[f(X_1,\ldots,X_{n})\right] - \E_{i-1}\left[f(X_1,\ldots,X_{n})\right] \right) = f(X_1,\ldots,X_{n}) - \E\left[f\right] 
+$$
+Hence, 
+\begin{align*}
+P\left(f(X_1,\ldots,X_n) \ge \Exp{f} + t\right) = P(\sum_{i=1}^n Z_i > t)
+\end{align*}
+Further note that
+\begin{align*}
+|Z_i| &= \left| \E_{i}\left[f(X_1,\ldots,X_{n})\right] - \E_{i-1}\left[f(X_1,\ldots,X_{n})\right]\right|\\
+& = \left| \E_{X_{i+1},\ldots,X_{n}}\left[f(X_1,\ldots,X_{n})\right] - \E_{X_{i},\ldots,X_{n}}\left[f(X_1,\ldots,X_{n})\right]\right|\\
+& \le  \E_{X_{i+1},\ldots,X_{n}}\left[ \left|f(X_1,\ldots,X_{n}) - \E_{X_{i}}\left[f(X_1,\ldots,X_{n})\right]\right|\right]\\
+& \le  \E_{X_{i+1},\ldots,X_{n}}\left[ \left|f(X_1,\ldots,X_i,\ldots,X_{n}) - \E_{X'_{i}}\left[f(X_1,\ldots,X'_i,\ldots,X_{n})\right]\right|\right]\\
+& \le  \E_{X'_{i}, X_{i+1},\ldots,X_{n}}\left[ \left|f(X_1,\ldots,X_i,\ldots,X_{n}) - [f(X_1,\ldots,X'_i,\ldots,X_{n})\right|\right] \le b
+\end{align*}
+Now we are ready to apply Hoeffding Azuma and hence we get,
+$$
+P\left(f(X_1,\ldots,X_n) \ge \Exp{f} + t\right) \le \exp\left(-  \frac{t^2}{8 n b^2}\right)
+$$
+\end{proof}
+
+\end{document}
