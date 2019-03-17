@@ -1,0 +1,261 @@
+%\documentclass[12pt,onecolumn]{report}
+%\usepackage{amssymb, amsmath, amsthm,graphicx,
+%paralist,algpseudocode,algorithm,cancel,url,color}
+%\usepackage[margin=1in]{geometry}
+
+\documentclass[11pt]{article}
+%\usepackage{amsmath, amssymb, amsthm, fullpage, algorithm,
+%  algorithmic, hyperref}
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+
+\input{arxiv_style}
+\input{macros}
+\input{ayush}
+
+\bibliographystyle{alpha}
+
+
+%\usepackage{sectsty}
+%\usepackage{fancyvrb}
+%\usepackage{mathrsfs}
+%\usepackage{multirow}
+%\usepackage{hhline}
+%\usepackage{booktabs}
+%\usepackage[table]{xcolor}
+%\usepackage{tikz}
+%\usepackage{amssymb}
+%\usepackage{amsmath}
+%\usepackage{dsfont}
+%\usepackage{enumitem}
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{mathtools}
+%\theoremstyle{definition}
+%
+%\newtheorem{definition}{Definition}[section]
+%\newtheorem{theorem}{Theorem}[section]
+%\newtheorem{lemma}[theorem]{Lemma}
+%\newtheorem{corollary}{Corollary}[theorem]
+
+\title{Concentration Inequalities II: Bernstein, Freedman, Martingale Methods  and Applications}
+\author{Presenter: Seth Strimas-Mackey \\ Scribe: Leo Huang}
+\date{1st March 2019}
+
+\begin{document}
+
+\maketitle
+
+\subsubsection*{Topics Covered}
+\begin{itemize}
+  \item Sub-Gaussian/Sub-Exponential Random Variables
+  \item Bernstein's Inequality (3 types)
+  \item Johnson-Lindenstrauss (JL) Lemma
+\end{itemize}
+
+\section{Sub-Gaussian Random Variables}
+\begin{definition}[Sub-Gaussian Random Variable]
+A random variable $X$, with $\mathbb{E}[X]=0$, is Sub-Gaussian with variance proxy $\sigma^2$, i.e., $X \sim \text{subG}(\sigma^2)$ if $$\mathbb{E}e^{sX}\le e^{s^2\sigma^2/2}~~\forall s\in \mathbb{R}$$.
+\end{definition}
+
+\begin{theorem}[Sub-Gaussian Hoeffding]
+Let $X_1, ...X_n\sim \text{subG}(\sigma^2)$ be independent, with $\mathbb{E}[X]=0$. Then
+\[P(\frac{1}{n}\sum_{i=1}^nX_i\ge t)\le e^{-nt^2/2\sigma^2}\]
+In the bounded Case: $|X_i|\le k, \sigma^2 \leq k^2$
+\end{theorem}
+\begin{proof}
+Let $\overline(X) = \frac{1}{n}\sum_{i=1}^n X_i$. Then, 
+\begin{align*}
+    P(\overline{X}>t) &\le e^{-st}\mathbb{E}[e^{s}\overline{X}]
+    \\ & = e^{-st}(\mathbb{E}[e^{sX_i}/n])^n 
+    \\&\le e^{-st}(e^{s^2\sigma^2/2n^2})^n \\& = e^{-st+s^2\sigma^2/2n} 
+\end{align*}
+Setting $s = \frac{nt}{\sigma^2}$ minimizes the exponent, so that we have 
+\[P(\overline{X}>t)\le e^{-\frac{nt^2}{2\sigma^2}}\]
+\end{proof}
+
+As an example, one can observe that for $n=1$, $P(X\ge t)\le e^{-t^2/2\sigma^2}$. Sub-Gaussian random variables have Gaussian like tails.
+
+\section{Sub-exponential Random Variables} 
+This class of random variables is similar to sub-Gaussian random variables, but have heavier exponential tails. 
+
+\paragraph{Example}
+Consider Laplace(1), with $f_X(x)=\frac{1}{2}e^{-|x|}$ for $x \in \mathbb{R}$. Then, $P(|x|\ge t)=e^{-t}$, and clearly, $X$ is not subG($\sigma^2$) for any $\sigma$. 
+
+But for small s, i.e., $|s| < \frac{1}{2}$, $\mathbb{E}[e^{sX}]=\frac{1}{1-s^2} \leq e^{2s^2}$, which is bounded by a sub-Gaussian moment generating function. Thus, the random variable behaves like sub-gaussian for small $s$, but not as $s$ gets larger. It turns out that this is more general.
+
+\begin{lemma} $\mathbb{E}[X]=0, \mathbb{P}(|x|>t)\le 2e^{-t/\lambda}, \lambda>0\implies \mathbb{E}[|x|^k]\le 2 \lambda^k k!$ and $ \mathbb{E}[e^{sX}]\le e^{2s^2\lambda^2}$.
+\end{lemma}
+
+This lemma is used to prove bound on all moments of $X$. The
+first step is to write $\mathbb{E}[|X|^k]=\int_{0}^\infty P(|x|^k>t)\,dt$. The second step is to Taylor expand and use the bound on $\mathbb{E}[|X|^k]$. 
+
+This motivates an equivalent definition using moment generating functions.
+
+
+
+\begin{definition}(Sub-Exponential Random Variables)
+A random variable $X$, with $\mathbb{E}[X]=0$, is Sub-Exponential with parameter $\lambda$, i.e., $X \in \text{subE}(\lambda)$,  if $\mathbb{E}[e^{sX}]\le e^{s^2\lambda^2/2},~~\forall ~|s|\le \frac{1}{\lambda}$.
+\end{definition}
+
+\section{Bernstein's Inequality}
+\subsection{Bernstein's Inequality I}
+\begin{theorem}
+Let $X_1, ...X_n\sim \text{subE}(\lambda)$ be independent random variables with $\mathbb{E}[X]=0$. Then, 
+\[P(\frac{1}{n}\sum_{i=1}^n X_i>t)\le \exp\left(-\frac{n}{2}\left(\frac{t^2}{\lambda^2}\wedge \frac{t}{\lambda}\right)\right)\]
+\end{theorem}
+
+\begin{proof}
+\begin{align*}
+P\left(\frac{1}{n}\sum_{i=1}^n X_i>t\right)\le e^{-snt}\prod_{i=1}^n \mathbb{E}[e^{sX_i}]\le e^{-snt}e^{ns^2\lambda^2/2}=\exp(-snt+ns^2\lambda^2/2)=\exp\prn*{-\frac{n}{2} \prn*{\frac{t^2}{\lambda^2}\wedge \frac{t}{\lambda}}}
+\end{align*}
+If, $\abs*{t} \leq \lambda^2$, optimizer $s$, otherwise set $S = \frac{1}{\lambda}$.
+
+%Optimize, $s=\frac{t}{}$ if $|t|\le 1, s=1$, else $s=t\wedge 1$.
+\end{proof}
+
+%Normalize by $\frac{1}{\sqrt{n}}$. Then 
+%\[P(\frac{1}{\sqrt{n}}\sum_{i=1}^n X_i > t ) \le \begin{cases}e^{-t^2/2\lambda^2} & |t|<\lambda \sqrt{n}\\ e^{-t\sqrt{n}/2\lambda} & |t|\ge \lambda \sqrt{n}\end{cases}
+%\]
+
+\begin{lemma} \label{lem: subgaussian_to_subexponential}
+ Let $X\sim \text{subG}(\sigma^2)$. Consider $Z=X^2-\mathbb{E}[X^2]$. Then $Z\sim \text{subE}[16\sigma^2]$. 
+\end{lemma}
+ \begin{proof}{(informal)}
+ \begin{align*}
+P(|x|>t) &\le 2e^{-ct^2}\\
+\intertext{implies,} P(X^2>t) &\le 2e^{-ct^2} \\ 
+\intertext{implies,}
+P(X^2>t) &\le 2e^{-ct}.
+\end{align*}
+\end{proof}
+
+For bounded RV, we can get stronger version of Bernstein's Inequality, with smooth transition from regime to regime.
+
+\subsection{Bernstein's Inequality II}
+\textbf{Theorem}
+Consider $X_1, ..., X_n$ with $\mathbb{E}[X_i]=0, \mathbb{E}[X_i^2]=\sigma^2$ and $|X_i|\le K$. Then 
+\[P\left(\frac{1}{n}\sum_{i=1}^n X_i>t\right)\le \exp\left(\frac{-nt^2/2}{\sigma^2+Kt/3}\right)\]
+
+
+\begin{proof}
+Using the standard Chernoff method, 
+\begin{align}
+P\left(\frac{1}{n}\sum_{i=1}^n X_i>t\right) &\le \frac{\mathbb{E} \left[ e^{ s \frac{\sum_{i=1}^n X_i}{n}} \right]}{e^{st}} \notag \\
+&= e^{-st} \prod_{i=1}^n \mathbb{E} \left[e^{s \frac{X_i}{n} } \right] \label{eq:bernstein_at_chernoff}
+\end{align}
+Note that if $|s|<\frac{3n}{k}$, then $|s \frac{X_i}{n}|\le 3$, and thus using lemma \ref{lem:bernstein_algebraic}
+\begin{align*}
+\mathbb{E}[e^{s\frac{X_i}{n}}]&\le 1+ \frac{s}{n}\mathbb{E}[X_i]+\mathbb{E}\left[ \frac{\frac{s^2X^2_i}{2n^2}}{1-\frac{|s||X_i|}{3n}}\right] \\
+					   &\le 1 + \mathbb{E}\left[\frac{\frac{s^2X^2_i}{2n^2}}{1-\frac{|s|K}{3n}}\right]  \\
+					   &\leq 1 + \frac{\frac{s^2\sigma^2}{2n^2}}{1-\frac{|s|K}{3n}} \\
+					   &\leq \exp\left(\frac{\frac{s^2\sigma^2}{2n^2}}{1-\frac{|s|K}{3n}}\right)  \numberthis \label{eq:mgf_bound}
+					   %&\le \exp\left(\frac{s^2\sigma^2/2}{1-|s|K/3}\right)
+\end{align*}
+
+Using this back in Equation \ref{eq:bernstein_at_chernoff}, we get:
+\begin{align*}
+P\left(\frac{1}{n}\sum_{i=1}^n X_i>t\right) &\le \exp\left(  \frac{\frac{s^2\sigma^2}{2n}}{1-\frac{|s|K}{3n}} - st \right)
+\intertext{Choosing $s=\frac{nt}{\sigma^2+tK/3}$}
+&\leq \exp\left(\frac{-nt^2}{2(\sigma^2 + \frac{tK}{3})}\right)
+\end{align*}
+\end{proof}
+
+\paragraph{Comparison to Hoeffding's inequality for Bounded Random variables}
+For the same failure probability $\delta$, Bernstein's inequality allows with probability at-least $1 - \delta$, 
+\begin{align*}
+	\frac{\sum_{i=1}^n X_i}{n} \leq \mathbb{E} [X] + O \left( \frac{\sigma}{\sqrt{n}} + \frac{K}{n} \right)
+\end{align*}
+
+whereas, Hoeffding's inequality gives us
+\begin{align*}
+	\frac{\sum_{i=1}^n X_i}{n} \leq \mathbb{E} [X] + O \left( \frac{K}{\sqrt{n}} \right).
+\end{align*}
+
+Thus, for random variables for which $\sigma << K$, Bernstein gives a tigher rate.
+\begin{lemma} \label{lem:bernstein_algebraic} For all $z \in [-3, 3] $, 
+\[e^z\le 1+z+\frac{z^2/2}{1-|z|/3}\] \end{lemma}
+\begin{proof} Proof by picture. Compare the two graphs.
+\end{proof}
+
+\subsubsection{An Application: Johnson Lindenstrauss Lemma}
+For any two vectors $a, a' \in \bbR^p$, define the distance to be $\nrm*{a - a'}_2^2$. The Johnson Lindenstrauss (JL) lemma deals with the following question.
+
+\paragraph{Question}  Given a finite set of $n$ points, $A=\{a_1, ...a_n\}\subset \mathbb{R}^D$, with $D$ large. Can one find a $d < D$ such that there exists a linear mapping $f: \bbR^D \mapsto \bbR^d$ that preserves distance upto an error $\epsilon$, i.e., $f$ is an $\epsilon-$isometry on $A\subset \mathbb{R}^D$, or,  
+$$(1-\epsilon)\|a-a'\|^2\le \|f(a)-f(a')\|^2 \le (1+\epsilon)\|a-a'\|^2 ~~ \forall a, a'\in A$$
+
+We first show that such a mapping exists using the probabilistic method. Consider a random matrix $X \in \bbR^{d \times D}$ such that for all $i\in\{1, ...d\}, j\in \{1, ...D\}$,  $X_{ij}$ is an independent random variable with $\En \brk*{X_{ij}}=0$ and $var(X_{ij})=1$ (for example normal gaussians).  Define the function $f: \bbR^D \mapsto \bbR^d$ as $f(a) \ldef{} \frac{1}{\sqrt{d}}Xa$, or for any $k \in [d]$,  $f_k(a) = \sum_{j=1}^d X_{ij} a_j$. Thus, we have:
+ 
+
+\begin{align*}\mathbb{E}[f_k^2(a)] &= \frac{1}{d}\sum_{j=1}^D a_j^2 \mathbb{E}[X_{ij}^2] = \|a\|^2 \\
+\mathbb{E}[\|f(a)\|^2] &= \frac{1}{d} \mathbb{E}\sum_{k=1}^d f_k^2(a) = \|a\|^2
+\end{align*}
+
+This shows that $\|\alpha\|^2$ is preserved by $f$ in expectation. The following theorem gives a condition on $d$ such that this also holds in high probability.
+
+\begin{theorem}[JL lemma]
+Let $A\subset \mathbb{R}^D$ such that  $|A|=n$. Consider a matrix $X: \bbR^D \mapsto \bbR^d$ such that for all $i \in [d], j \in [D], ~~ X_{ij} \in  \text{subG}(\sigma^2)$ and is sampled independently. Then for any $\epsilon, \delta\in(0, 1)$, if $d\ge 100 \frac{\sigma^4}{\epsilon^{2}}\log(n/\sqrt{\delta})$, then with probability at-least $1 - \delta$, the linear map defined by $f(a) \ldef{} \frac{1}{\sqrt{d}} Xa$ is an $\epsilon-$isometry on $A$, or more specifically, 
+$$(1-\epsilon)\|a-a'\|^2\le \|f(a)-f(a')\|^2 \le (1+\epsilon)\|a-a'\|^2 ~~ \forall a, a'\in A$$
+\end{theorem}
+
+Before we provide a proof for the JL lemma, observe that the projection dimension $d$ is independent of the dimension $D$ of our feature vectors. 
+\begin{proof}
+Define $T=\{\frac{a-a'}{\|a-a'\|}: a, a'\in A, a\ne a' \}$. We first state the following fact, which is quite easy to prove, 
+
+\begin{fact}
+$f$ is a linear $\epsilon-$isometry of A iff \[\left|\|f(\alpha)\|^2-1\right|\le \epsilon \ \ \forall \alpha\in T\]
+\end{fact}
+
+We will thus show that with probabilty at-least $1 - \delta $, $\left|\|f(\alpha)\|^2-1\right|\le \epsilon \ \ \forall \alpha\in T$. Note that $|T|\le {{n}\choose{2}}\le \frac{n^2}{2}$, and $\En \brk*{f(\alpha)} = 1$ $\forall \alpha \in T$. First observe that $f_{i}(\alpha)$ is $\sigma^2$ sub-gaussian. 
+
+\begin{align*}
+\mathbb{E}[e^{sf_i(\alpha)}] &= \mathbb{E}\exp\left(s\sum_{j=1}^D \alpha_j X_{ij}\right) \\& = \prod_{j=1}^D \exp(s\alpha_jX_{ij})\\&\le \exp(\frac{s^2\sigma^2}{2}  \sum_{j=1}^D \alpha_j^2 /\|\alpha\|^2) \\ & = e^{s^2\sigma^2/2}
+\end{align*}
+
+Using \pref{lem: subgaussian_to_subexponential}, this implies that $f^2_i(\alpha)\sim \text{subE}(16\sigma^2)$. Thus, applying Bernstein's inequality, with $\En \brk*{f_i(\alpha)} = 1 $  and taking a union bound over all $\alpha \in T$, 
+
+
+
+ Using the Bernstein's inequality in the regime $|t|\le 16\sigma^2$, 
+ 
+ \begin{align*}
+ P(\sup_{\alpha\in T}\left|\sum_{i=1}^d  \frac{f_i^2(\alpha)}{d} -1\right|\ge \epsilon)\le 2 \times \frac{n^2}{2} \exp(\frac{-dt^2}{2 \times16^2\sigma^4}),
+\intertext{Setting $t = \sqrt{\frac{512\sigma^4\log(n^2/\delta)}{d}} ~~(\leq 16 \sigma^2)$, we get, }
+P\left(\sup_{\alpha\in T}\left|\|f(\alpha)\|^2-1\right|\ge \sqrt{\frac{512\sigma^4\log(n^2/d)}{d}} \right )\ge \delta.
+ \end{align*}
+Thus, our choice of $d$ suffices for  $\epsilon$-isometry. 
+\end{proof}
+
+\subsection{Berstein's Inequality III: Martingales}
+
+\begin{theorem}[Freedman's Inequality]
+Let $X_1, ..., X_n$ be a bounded martingale difference sequence, i.e.,  $\mathbb{E}[X_i|X_{i-1}]=0$ and  $|X_i|\le K$. Define the martingale $S_i = \sum_{j=1}^i X_i$. Additionally, define $\En_{i-1}[S_1]$ to be the expectation w.r.t. $X_i$ while the random variables $X_1, \ldots, X_i$ are fixed. Similarly, define $V_n = \sum_{i=1}^n \En_{i-1} \brk*{X_i^2} $.Then, 
+$$ P\prn*{S_n>t \text{ and } V_n\le \sigma^2} \le \exp\left(\frac{-t^2/2}{\sigma^2+Kt/3}\right) $$
+\end{theorem}
+
+$E_{i-1}[S_i] = E_{i-1}[X_i]+S_{i-1}=S_{i-1}$. Let $V_n = \sum_{i=1}^n \mathbb{E}[X_i^2]$. Then 
+
+
+\begin{proof}(informal)
+Previously, we saw $\mathbb{E}[e^{\lambda X_i}]\le \exp(\mathbb{E}[X_i^2\psi(\lambda)])$, $\psi(s) = \frac{\lambda^2/2}{1-|\lambda|K/3}$ (see \pref{eq:mgf_bound}). Repeat argument using $\mathbb{E}_{i-1}$ instead of $\mathbb{E}$ to show that $\mathbb{E}_{i-1}e^{\lambda X_i}\le \exp(\mathbb{E}_{i-1}X_i^2\psi(\lambda))$. Then 
+
+\begin{align*}
+    P(S_n\ge t, V_n\le \sigma^2) &= \mathbb{E}1(e^{\lambda S_n}\ge e^{\lambda t})1(V_n\le \sigma^2) \\& \le e^{-\lambda t}\mathbb{E}[e^{\lambda S_n}1(V_n\le \sigma^2)] \\&= e^{-\lambda t}\mathbb{E}[e^{\lambda S_n-V_n\psi(\lambda)}e^{V_n\psi(\lambda)}1(V_n\le \sigma^2)] \\ &\le e^{-\lambda t+\sigma^2 \psi(\lambda)}\mathbb{E}[e^{\lambda S_n-V_n\psi(\lambda)}1(V_n\le \sigma^2)]
+    \\&\le e^{-\lambda t+\sigma^2 \psi(\lambda)}\mathbb{E}[e^{\lambda S_n -V_n\psi(\lambda)}] 
+    \\&= e^{-\lambda t +\sigma^2\psi(\lambda)}\mathbb{E}[e^{\lambda S_{n-1}-V_{n-1}\psi(\lambda)-\mathbb{E}_{n-1}[X_n]^2\psi(\lambda)}\times e^{\lambda X_n}]\\&= e^{-\lambda t +\sigma^2\psi(\lambda)}\mathbb{E}[e^{\lambda S_{n-1}-V_{n-1}\psi(\lambda)-\mathbb{E}_{n-1}[X_n]^2\psi(\lambda)}\times \mathbb{E}_{n-1}[e^{\lambda X_n}]]  \\& =
+    [e^{-\lambda t +\sigma^2 \psi(\lambda)}\mathbb{E}[e^{\lambda S_{n-1}-V_{n-1}\psi(\lambda)-\mathbb{E}_{n-1}[X_n^2]\psi(\lambda)}\times e^{\mathbb{E}_{n-1}[X_n^2]\psi(\lambda)}]
+    \\& = e^{-\lambda t+\sigma^2 \psi(\lambda)}\mathbb{E}[e^{\lambda S_{n-1}-V_{n-1}\psi(\lambda)}]\le ...\le e^{-\lambda t +\sigma^2\psi(\lambda)} 
+\end{align*}
+Optimizing over $\lambda$ gives the required tail bound.
+\end{proof}
+
+\nocite{*}
+{\small
+\bibliography{refs}
+}
+
+
+
+
+\end{document}
